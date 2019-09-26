@@ -1,0 +1,39 @@
+{
+  "name": "arctbot",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "repository": "https://github.com/arctfoxx/bot.git",
+  "author": "Brian Shao <brian@arct.io>",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/uws": "^10.149.0",
+    "axios": "^0.19.0",
+    "better-sqlite-pool": "^0.2.2",
+    "better-sqlite3": "^5.4.3",
+    "dice-typescript": "^1.6.1",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.1.0",
+    "enmap": "^5.1.2",
+    "ffmpeg": "^0.0.4",
+    "mathjs": "^6.2.1",
+    "moment": "^2.24.0",
+    "node-opus": "^0.3.2",
+    "tinycolor2": "^1.4.1",
+    "winston": "^3.2.1",
+    "yargs": "^14.0.0",
+    "ytdl-core": "^0.29.7"
+  },
+  "devDependencies": {
+    "@types/mathjs": "^6.0.2",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^12.7.5",
+    "@types/tinycolor2": "^1.4.2",
+    "@types/yargs": "^13.0.2",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-terser": "^1.2.0",
+    "gulp-typescript": "^5.0.1",
+    "typescript": "^3.6.3"
+  }
+}

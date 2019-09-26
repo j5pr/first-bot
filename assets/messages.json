@@ -1,0 +1,19 @@
+{
+  "suicide": [
+    "{{user}} did nothing wrong...",
+    "Well yes but actually no."
+  ],
+  "kill": [
+    "Oh wait, that's illegal.",
+    "Bye, {{user}}.",
+    "Die, {{user}}! NOT TODAY.",
+    "The end justifies the means. Goodbye, {{user}}."
+  ],
+  "burn": [
+    "{{user}} has been **ROASTED** in an oven by {{author}}."
+  ],
+  "lick": [
+    "{{author}} licked {{user}}! Ewww!",
+    "What the fu--"
+  ]
+}
