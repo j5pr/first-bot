@@ -1,5 +1,4 @@
-import { Message, User, RichEmbed } from 'discord.js'
-import Yargs from 'yargs/yargs'
+import { Message } from 'discord.js'
 
 import { Args, Category, Client, Command, Elevation, Embed } from '../model'
 

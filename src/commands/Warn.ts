@@ -1,5 +1,4 @@
 import { GuildMember } from 'discord.js'
-import Yargs from 'yargs/yargs'
 
 import { Args, Category, Client, Punishment, Elevation, Embed } from '../model'
 

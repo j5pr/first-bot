@@ -1,7 +1,6 @@
 import { inspect } from 'util'
 
 import discord, { Message, Collection } from 'discord.js'
-import Yargs from 'yargs/yargs'
 
 import { Args, Category, Client, Command, Elevation, Embed } from '../model'
 

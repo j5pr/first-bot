@@ -46,7 +46,13 @@ export default new class Message extends Event {
             client.logger.info(`${settings.prefix}${command.name} has been run by ${message.author.tag} with arguments [${args._.join(', ')}] in server ${message.guild.name}`)
 
             message.channel.startTyping()
-            await command.run(client, message, args, guild)
+
+            try {
+                await command.run(client, message, args, guild)
+            } catch (e) {
+                await message.channel.send({ embed: Embed.error('There was a problem running the command:\n' + e.toString(), message.author) })
+            }
+
             message.channel.stopTyping()
 
             await this.log(command, elevation, message, params, guild)

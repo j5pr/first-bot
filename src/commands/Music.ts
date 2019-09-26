@@ -2,12 +2,11 @@ import { Message, VoiceChannel } from 'discord.js'
 import yt from 'ytdl-core'
 
 import { Args, Category, Client, Command, Elevation, Embed, flag } from '../model'
-import Yargs from 'yargs/yargs'
 
 export default new class Music extends Command {
   public name: string = 'music'
   public aliases: string[] = []
-  public category: Category = Category.ENTERTAINMENT
+  public category: Category = Category.MEDIA
 
   public elevation: Elevation = Elevation.GLOBAL_TRUSTED | Elevation.USER
 

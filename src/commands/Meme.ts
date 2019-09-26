@@ -2,7 +2,6 @@ import axios from 'axios'
 import { Message } from 'discord.js'
 
 import { Args, Category, Client, Command, Elevation, Embed } from '../model'
-import Yargs from 'yargs/yargs'
 
 export default new class Meme extends Command {
   public name: string = 'meme'

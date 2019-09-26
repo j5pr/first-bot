@@ -1,6 +1,5 @@
 import { Message } from 'discord.js'
 import tinycolor from 'tinycolor2'
-import Yargs from 'yargs/yargs'
 
 import { Args, Category, Client, Command, Elevation, Embed } from '../model'
 

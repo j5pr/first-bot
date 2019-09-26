@@ -1,6 +1,5 @@
 import * as d from 'dice-typescript'
 import { Message } from 'discord.js'
-import Yargs from 'yargs/yargs'
 
 import { Args, Category, Client, Command, Elevation, Embed } from '../model'
 

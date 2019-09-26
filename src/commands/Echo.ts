@@ -1,5 +1,4 @@
 import { Message } from 'discord.js'
-import Yargs from 'yargs/yargs'
 
 import { Args, Category, Client, Command, Elevation, flag } from '../model'
 

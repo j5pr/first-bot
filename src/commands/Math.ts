@@ -1,8 +1,7 @@
 import { Message } from 'discord.js'
 import * as math from 'mathjs'
-import Yargs from 'yargs/yargs'
 
-import { Args, Category, Client, Command, Elevation, Embed, flag } from '../model'
+import { Args, Category, Client, Command, Elevation, Embed, flag, string } from '../model'
 
 export default new class Math extends Command {
   public name: string = 'math'
@@ -15,19 +14,23 @@ export default new class Math extends Command {
   public usage: string = 'math [scope] <expression>'
 
   public options = [
-    { ...flag, name: 'evaluate', description: 'Evaluate an expression', default: true, alias: 'e' },
+    { ...flag, name: 'evaluate', description: 'Evaluate an expression', alias: 'e' },
     { ...flag, name: 'simplify', description: 'Use the simplify() function', alias: 's' },
-    { ...flag, name: 'derivative', description: 'Use the derivative() function', alias: 'd' }
+    { ...flag, name: 'derivative', description: 'Use the derivative() function', alias: 'd' },
+    { ...string, name: 'scope', description: 'Provide a scope', alias: 'x', default: '{}' }
   ]
 
   public async run(client: Client, message: Message, args: Args, guild: Client.Guild): Promise<void> {
     if (args._.length < 1)
       return void await this.args(message)
 
-    let scope: { [key: string]: any } = {}
-
-    if (args.length === 2)
-      scope = JSON.parse(args.shift() || '{}')
+    let scope: { [key: string]: any }
+    
+    try {
+      scope = JSON.parse(args.scope)
+    } catch (e) {
+      return void await message.channel.send({ embed: Embed.error('Error parsing scope: \n' + e.toString(), message.author) })
+    }
 
     const expr = args._.join(' ')
 
