@@ -4,6 +4,9 @@ dist/
 # Dotenv Files
 .env
 
+#Data
+data/
+
 # Logs
 logs
 *.log
