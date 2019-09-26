@@ -28,7 +28,7 @@
     "@types/minimist": "^1.2.0",
     "@types/node": "^12.7.5",
     "@types/tinycolor2": "^1.4.2",
-    "@types/yargs": "^13.0.2",
+    "@types/yargs": "^13.0.3",
     "del": "^5.1.0",
     "gulp": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
