@@ -12,12 +12,13 @@ export default new class Help extends Command {
 
   public description: string = 'Who doesn\'t like rainbows!'
   public usage: string = 'color <color resolvable>'
-  
+
   public options = []
 
   public async run(client: Client, message: Message, args: Args, guild: Client.Guild): Promise<void> {
-    if (args._.length < 1)
+    if (args._.length < 1) {
       return void await this.args(message)
+    }
 
     let color = tinycolor(args._.join(' '))
 
@@ -33,36 +34,36 @@ export default new class Help extends Command {
     await message.channel.send({ embed })
   }
 
-  private numericalToRgb (numerical: number): number[] {
-    const r = (numerical & 0xff0000) >> 16;
-    const g = (numerical & 0x00ff00) >> 8;
+  private numericalToRgb(numerical: number): number[] {
+    const r = (numerical & 0xff0000) >> 16
+    const g = (numerical & 0x00ff00) >> 8
     const b = (numerical & 0x0000ff)
 
     return [r, g, b]
   }
 
-  private numericalToCmyk (numerical: number): number[] {
+  private numericalToCmyk(numerical: number): number[] {
     let c = 0, y = 0, m = 0, k = 0
 
-    const [ r, g, b ] = this.numericalToRgb(numerical)
+    const [r, g, b] = this.numericalToRgb(numerical)
 
     if (r === 0 && g === 0 && b === 0) {
       k = 1
 
-      return [ c, y, m, k ]
+      return [c, y, m, k]
     }
 
     c = 1 - (r / 255)
     m = 1 - (g / 255)
     y = 1 - (b / 255)
 
-    var min = Math.min(c, m, y)
+    let min = Math.min(c, m, y)
 
     c = (c - min) / (1 - min)
     m = (m - min) / (1 - min)
     y = (y - min) / (1 - min)
     k = min
 
-    return [ c, m, y, k ]
+    return [c, m, y, k]
   }
 }

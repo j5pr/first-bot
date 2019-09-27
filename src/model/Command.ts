@@ -12,7 +12,7 @@ export abstract class Command {
   public abstract elevation: Elevation
 
   public abstract description: string
-  public abstract options: ({ name: string} & Options)[]
+  public abstract options: ({ name: string } & Options)[]
   public abstract usage: string
 
   private yurgs: Argv = Yargs()
@@ -28,8 +28,9 @@ export abstract class Command {
 
   public get yargs(): Argv {
     if (!this.registered) {
-      for (let option of this.options)
+      for (let option of this.options) {
         this.yurgs.option(option.name, option)
+      }
 
       this.registered = true
     }

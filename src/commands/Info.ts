@@ -4,19 +4,20 @@ import { Args, Category, Client, Command, Elevation, Embed } from '../model'
 
 export default new class Info extends Command {
   public name: string = 'info'
-  public aliases: string[] = [ 'information' ]
+  public aliases: string[] = ['information']
   public category: Category = Category.GENERAL
 
   public elevation: Elevation = Elevation.GLOBAL_USER | Elevation.USER
 
   public description: string = 'Basic information about the bot'
   public usage: string = 'info'
-  
+
   public options = []
 
   public async run(client: Client, message: Message, args: Args, guild: Client.Guild): Promise<void> {
-    if (args._.length !== 0)
+    if (args._.length !== 0) {
       return void await this.args(message)
+    }
 
     const embed = Embed.info(message.author)
       .addField('ArctBot', 'Hello, I\'m ArctBot! I am a discord bot made by Arct#0155 to help make your server better!')

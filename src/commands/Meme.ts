@@ -16,10 +16,11 @@ export default new class Meme extends Command {
   public options = []
 
   public async run(client: Client, message: Message, args: Args, guild: Client.Guild): Promise<void> {
-    if (args._.length !== 0)
+    if (args._.length !== 0) {
       return void this.args(message)
+    }
 
-    let data;
+    let data
 
     try {
       data = await axios.get('https://meme-api.herokuapp.com/gimme')

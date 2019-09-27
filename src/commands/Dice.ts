@@ -5,7 +5,7 @@ import { Args, Category, Client, Command, Elevation, Embed } from '../model'
 
 export default new class Dice extends Command {
   public name: string = 'dice'
-  public aliases: string[] = [ 'calc', 'calculator' ]
+  public aliases: string[] = ['calc', 'calculator']
   public category: Category = Category.UTILITY
 
   public elevation: Elevation = Elevation.GLOBAL_USER | Elevation.USER
@@ -13,12 +13,12 @@ export default new class Dice extends Command {
   public description: string = 'Do quick maths'
   public usage: string = 'math <expression>'
 
-  
   public options = []
 
   public async run(client: Client, message: Message, args: Args, guild: Client.Guild): Promise<void> {
-    if (args._.length < 1)
+    if (args._.length < 1) {
       return void await this.args(message)
+    }
 
     const expression = args._.join(' ')
 

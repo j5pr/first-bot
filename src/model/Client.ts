@@ -12,29 +12,31 @@ export class Client extends discord.Client {
   public commands: Command[] = []
   public logger: Logger
 
-  public settings: Enmap<string, Client.Guild> & { default: Client.Guild.Settings }
+  public data: Enmap<string, Client.Guild> & { defaults: Client.Guild }
   public music: Map<string, Client.Guild.Music> = new Map()
 
-  private accounts: { owner: string, admin: string[], trusted: string[] }
+  private accounts: { owner: string, admin: string[], trusted: string[], blacklisted: string[] }
 
   public constructor(public options: Client.Options) {
     super(options)
 
-    this.version = options.version || "**N/A**"
+    this.version = options.version || '**N/A**'
     this.cooldown = options.cooldown || 1000
 
     this.accounts = options.accounts
-    this.logger = options.logger || createLogger({ level: 'info', transports: [ new transports.Console({ format: format.simple() }) ] })
+    this.logger = options.logger || createLogger({ level: 'info', transports: [new transports.Console({ format: format.simple() })] })
 
     this.token = options.token
 
-    // @ts-ignore
-    this.settings = new Enmap({
-      name: 'settings',
+    // @ts-ignore (Enmap<string, Client.Guild> not assignable to Enmap<string, Client.Guild> & { defaults: Client.Guild }) - Defaults asigned immediately afterwards
+    this.data = new Enmap({
+      name: 'guild',
       autoFetch: true,
-      fetchAll: false
+      fetchAll: true,
+      ensureProps: true,
+      cloneLevel: 'deep'
     })
-    this.settings.default = options.defaultSettings
+    this.data.defaults = options.defaults
   }
 
   public async elevation(user: User, guild: Guild): Promise<Elevation> {
@@ -43,28 +45,32 @@ export class Client extends discord.Client {
     let global = Elevation.GLOBAL_USER
     let local = Elevation.USER
 
-    const settings = (this.settings.ensure(guild.id, { settings: this.settings.default, punishments: [] }) as Client.Guild).settings
+    const guildData = this.data.ensure(guild.id, this.data.defaults)
+    const settings = guildData.settings
 
-    const adminRole = guild.roles.find((v) => v.name === settings.roles.administrator || v.name === settings.roles.administrator)
-    const modRole = guild.roles.find((v) => v.name === settings.roles.moderator || v.name === settings.roles.moderator)
+    const adminRole = guild.roles.find((v) => v.name === settings.roles.administrator || v.id === settings.roles.administrator)
+    const modRole = guild.roles.find((v) => v.name === settings.roles.moderator || v.id === settings.roles.moderator)
+    const blacklistRole = guild.roles.find((v) => v.name === settings.roles.blacklisted || v.id === settings.roles.blacklisted)
 
-    if (this.accounts.owner === user.id)
+    if (this.accounts.owner === user.id) {
       global = Elevation.GLOBAL_AUTHOR
-    else if (this.accounts.admin.includes(user.id))
+    } else if (this.accounts.admin.includes(user.id)) {
       global = Elevation.GLOBAL_ADMINISTRATOR
-    else if (this.accounts.trusted.includes(user.id))
+    } else if (this.accounts.trusted.includes(user.id)) {
       global = Elevation.GLOBAL_TRUSTED
-    // else if (this.globalBlacklist.includes(user.id))
-    //   global = Elevation.GLOBAL_BLACKLISTED
+    } else if (this.accounts.blacklisted.includes(user.id)) {
+      global = Elevation.GLOBAL_BLACKLISTED
+    }
 
-    if (user.id === guild.owner.id)
+    if (user.id === guild.owner.id) {
       local = Elevation.OWNER
-    else if (member && adminRole && member.roles.has(adminRole.id))
+    } else if (member && adminRole && member.roles.has(adminRole.id)) {
       local = Elevation.ADMINISTRATOR
-    else if (member && modRole && member.roles.has(modRole.id))
+    } else if (member && modRole && member.roles.has(modRole.id)) {
       local = Elevation.MODERATOR
-    // else if (settings.blacklisted.includes(user.id))
-    //   local = Elevation.BLACKLISTED
+    } else if (member && blacklistRole && member.roles.has(blacklistRole.id)) {
+      local = Elevation.BLACKLISTED
+    }
 
     return global | local
   }
@@ -72,7 +78,7 @@ export class Client extends discord.Client {
   public async login(): Promise<string> {
     await super.destroy()
 
-    return await super.login(this.token)
+    return super.login(this.token)
   }
 
   public async init(commands: Command[], events: Event[]): Promise<void> {
@@ -88,8 +94,9 @@ export class Client extends discord.Client {
       this.commands.push(command)
     }
 
-    for (let guild of this.guilds.array())
-      this.settings.ensure(guild.id, { settings: this.settings.default, punishments: [] })
+    for (let guild of this.guilds.array()) {
+      this.data.ensure(guild.id, this.data.defaults)
+    }
   }
 
   public wait(ms: number): Promise<void> {
@@ -97,19 +104,23 @@ export class Client extends discord.Client {
   }
 
   public mention(mention: string): User | undefined {
-    if (!mention.startsWith('<@') || !mention.endsWith('>'))
+    if (!mention.startsWith('<@') || !mention.endsWith('>')) {
       return
-    
+    }
+
     mention = mention.slice(2, -1)
 
-    if (mention.startsWith('!'))
+    if (mention.startsWith('!')) {
       mention = mention.slice(1)
+    }
 
     return this.users.get(mention)
   }
 
-  public static allowed (has: Elevation, required: Elevation) {
-    return !((has & 0xF0) > (required & 0xF0) && (has & 0x0F) > (required & 0x0F))
+  public static allowed(has: Elevation, required: Elevation) {
+    return (has & 0xF0) > Elevation.GLOBAL_USER || (has & 0x0F) > Elevation.USER ?
+      false :
+      !((has & 0xF0) > (required & 0xF0) && (has & 0x0F) > (required & 0x0F))
   }
 }
 
@@ -123,6 +134,12 @@ export namespace Client {
   export namespace Guild {
     export interface Settings {
       prefix: string
+      welcome: {
+        enabled: boolean,
+        channel: string,
+        join: string,
+        leave: string
+      }
       logs: {
         enabled: boolean
         moderation: string
@@ -131,6 +148,7 @@ export namespace Client {
       roles: {
         moderator: string
         administrator: string
+        blacklisted: string
       }
     }
 
@@ -161,11 +179,12 @@ export namespace Client {
 
   export namespace Punishment {
     export enum Type {
-      PARDON,
-      WARNING,
-      MUTE,
-      KICK,
-      BAN
+      PARDON = 'Pardon',
+      WARNING = 'Warning',
+      MUTE = 'Mute',
+      UNMUTE = 'Unmute',
+      KICK = 'Kick',
+      BAN = 'Ban'
     }
   }
 
@@ -174,8 +193,9 @@ export namespace Client {
       owner: string
       admin: string[]
       trusted: string[]
+      blacklisted: string[]
     }
-    defaultSettings: Guild.Settings
+    defaults: Guild
     version?: string
     cooldown?: number
     token: string

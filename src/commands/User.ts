@@ -15,8 +15,9 @@ export default new class User extends Command {
   public options = []
 
   public async run(client: Client, message: Message, args: Args, guild: Client.Guild): Promise<void> {
-    if (args._.length !== 0 && args._.length !== 1)
+    if (args._.length !== 0 && args._.length !== 1) {
       return void await this.args(message)
+    }
 
     const user = message.mentions.users.first() || message.author
 

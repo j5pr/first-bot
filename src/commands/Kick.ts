@@ -1,14 +1,11 @@
 import { GuildMember } from 'discord.js'
 
-import { Args, Category, Client, Punishment, Elevation } from '../model'
+import { Args, Client, Punishment } from '../model'
 
 export default new class Kick extends Punishment {
   public name: string = 'kick'
   public type: Client.Punishment.Type = Client.Punishment.Type.KICK
-  public aliases: string[] = []
-  public category: Category = Category.MODERATION
-
-  public elevation: Elevation = Elevation.GLOBAL_ADMINISTRATOR | Elevation.MODERATOR
+  public aliases: string[] = ['leave']
 
   public description: string = 'Kick a user'
   public usage: string = 'kick <user> [reason]'

@@ -4,7 +4,7 @@ import { Args, Category, Client, Command, Elevation, Embed } from '../model'
 
 export default new class Ping extends Command {
   public name: string = 'test'
-  public aliases: string[] = [ 'tst' ]
+  public aliases: string[] = ['tst']
   public category: Category = Category.GENERAL
 
   public elevation: Elevation = Elevation.GLOBAL_TRUSTED | Elevation.NONE

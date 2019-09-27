@@ -5,7 +5,7 @@ import { Command, Elevation } from '.'
 export class Embed {
   public static base(user?: User): RichEmbed {
     const embed = new RichEmbed()
-      .setFooter("ArctBot", "https://cdn.discordapp.com/avatars/508692053966848031/893e48c96ac55fe3980a671af388137c.webp?size=128")
+      .setFooter('ArctBot', 'https://cdn.discordapp.com/avatars/508692053966848031/893e48c96ac55fe3980a671af388137c.webp?size=128')
       .setTimestamp()
 
     return user ?
@@ -23,7 +23,7 @@ export class Embed {
       .setColor(0xFFB825)
   }
 
-  public static error (message: string, user?: User): RichEmbed {
+  public static error(message: string, user?: User): RichEmbed {
     return Embed.base(user)
       .setColor(0xE63B10)
       .addField(':x: **Error!**', message)

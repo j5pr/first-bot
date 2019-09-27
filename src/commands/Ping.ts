@@ -15,10 +15,11 @@ export default new class Ping extends Command {
   public options = []
 
   public async run(client: Client, message: Message, args: Args, guild: Client.Guild): Promise<void> {
-    if (args._.length !== 0)
+    if (args._.length !== 0) {
       return void await this.args(message)
+    }
 
-    const ping: Message = await message.channel.send("Ping?") as Message
+    const ping: Message = await message.channel.send('Ping?') as Message
 
     await ping.edit(`:ping_pong: Pong! :clock4: Latency is ${ping.createdTimestamp - message.createdTimestamp}ms. :desktop: API Latency is ${Math.round(client.ping)}ms.\n`)
   }

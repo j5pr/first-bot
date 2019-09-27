@@ -1,19 +1,19 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [ "dom", "esnext", "esnext.asynciterable" ],
-
+    "lib": [
+      "dom",
+      "esnext",
+      "esnext.asynciterable"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-
     "jsx": "preserve",
     "removeComments": true,
-
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noUnusedLocals": false,
@@ -24,15 +24,12 @@
     "strictFunctionTypes": true,
     "strictPropertyInitialization": true,
     "alwaysStrict": true,
-
     "baseUrl": ".",
     "outDir": "dist/"
   },
-
   "include": [
     "src/**/*"
   ],
-
   "exclude": [
     "node_modules",
     "**/*.spec.ts"

@@ -4,19 +4,20 @@ import { Args, Category, Client, Command, Elevation, Embed } from '../model'
 
 export default new class Guild extends Command {
   public name: string = 'guild'
-  public aliases: string[] = [ 'server' ]
+  public aliases: string[] = ['server']
   public category: Category = Category.INFORMATION
 
   public elevation: Elevation = Elevation.GLOBAL_USER | Elevation.USER
 
   public description: string = 'Gain information about the current guild'
   public usage: string = 'guild'
-  
+
   public options = []
 
   public async run(client: Client, message: Message, args: Args, settings: Client.Guild): Promise<void> {
-    if (args._.length !== 0)
+    if (args._.length !== 0) {
       return void await this.args(message)
+    }
 
     const { guild } = message
 
