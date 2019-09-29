@@ -16,9 +16,9 @@ export default new class Message extends Event {
     }
 
     if (settings.filter.enabled === true) {
-      let filtered = this.filter(message)
+      let filtered = this.filter(message.content)
 
-      if (filtered !== message.content) {
+      if (filtered !== message.content.toLowerCase()) {
         return void await message.reply('please do not swear! Filtered message:\n```' + `${message.member.displayName}: ${filtered}` + '```')
       }
     }
@@ -74,8 +74,8 @@ export default new class Message extends Event {
     }
   }
 
-  private filter(message: discord.Message): string {
-    let filtered = message.content.toLowerCase()
+  private filter(message: string): string {
+    let filtered = message.toLowerCase()
 
     for (let word of words) {
       filtered = filtered.split(word).join('[*BAWK*]')
