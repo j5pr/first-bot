@@ -19,7 +19,10 @@ export default new class Message extends Event {
       let filtered = this.filter(message.content)
 
       if (filtered !== message.content.toLowerCase()) {
-        return void await message.reply('please do not swear! Filtered message:\n```' + `${message.member.displayName}: ${filtered}` + '```')
+        return void Promise.all([
+          await message.reply('please do not swear! Filtered message:\n```' + `${message.member.displayName}: ${filtered}` + '```'),
+          await message.delete(1000)
+        ])
       }
     }
 
