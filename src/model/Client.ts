@@ -39,7 +39,7 @@ export class Client extends discord.Client {
     this.data.defaults = options.defaults
   }
 
-  public async elevation(user: User, guild: Guild): Promise<Elevation> {
+  public elevation(user: User, guild: Guild): Elevation {
     const member = guild.member(user)
 
     let global = Elevation.GLOBAL_USER
@@ -72,13 +72,65 @@ export class Client extends discord.Client {
       local = Elevation.BLACKLISTED
     }
 
+    if (global === Elevation.GLOBAL_BLACKLISTED)
+      local = Elevation.BLACKLISTED
+
     return global | local
+  }
+
+  public static allowed(has: Elevation, required: Elevation) {
+    return (has & 0xF0) > Elevation.GLOBAL_USER || (has & 0x0F) > Elevation.USER ?
+      false :
+      (has & 0xF0) < (required & 0xF0) || (has & 0x0F) < (required & 0x0F)
+  }
+
+  public userify(resolvable: string, guild?: Guild): User | undefined {
+    let user: User | undefined
+
+    if (/<@!?.+>/.test(resolvable))
+      user = this.mention(resolvable)
+
+    if (user)
+      return user
+
+    if (guild) {
+      let member = guild.members.find((m) => m.displayName === resolvable)
+
+      if (member)
+        return member.user
+    }
+
+    user = this.users.find(u => 
+      u.id === resolvable ||
+      u.username === resolvable ||
+      u.tag === resolvable
+    )
+
+    return user
+  }
+
+  public mention(mention: string): User | undefined {
+    if (!mention.startsWith('<@') || !mention.endsWith('>')) {
+      return
+    }
+
+    mention = mention.slice(2, -1)
+
+    if (mention.startsWith('!')) {
+      mention = mention.slice(1)
+    }
+
+    return this.users.get(mention)
   }
 
   public async login(): Promise<string> {
     await super.destroy()
+    
+    return await super.login(this.token)
+  }
 
-    return super.login(this.token)
+  public autoReconnect(): Client {
+    return this.on('disconnect', this.login)
   }
 
   public async init(commands: Command[], events: Event[]): Promise<void> {
@@ -102,26 +154,6 @@ export class Client extends discord.Client {
   public wait(ms: number): Promise<void> {
     return new Promise((resolve) => this.setTimeout(resolve, ms))
   }
-
-  public mention(mention: string): User | undefined {
-    if (!mention.startsWith('<@') || !mention.endsWith('>')) {
-      return
-    }
-
-    mention = mention.slice(2, -1)
-
-    if (mention.startsWith('!')) {
-      mention = mention.slice(1)
-    }
-
-    return this.users.get(mention)
-  }
-
-  public static allowed(has: Elevation, required: Elevation) {
-    return (has & 0xF0) > Elevation.GLOBAL_USER || (has & 0x0F) > Elevation.USER ?
-      false :
-      !((has & 0xF0) > (required & 0xF0) && (has & 0x0F) > (required & 0x0F))
-  }
 }
 
 export namespace Client {
@@ -133,7 +165,10 @@ export namespace Client {
 
   export namespace Guild {
     export interface Settings {
-      prefix: string
+      prefix: string,
+      filter: {
+        enabled: boolean
+      }
       welcome: {
         enabled: boolean,
         channel: string,

@@ -23,12 +23,11 @@ export default new class Settings extends Command {
 
       if (!setting) {
         value = guild.settings
-      }
-      else {
-        value = this.get<string>(guild.settings, setting)
+      } else {
+        value = this.get(guild.settings, setting)
       }
 
-      if (!value) {
+      if (value === undefined) {
         return void await message.channel.send({ embed: Embed.error('Could not find setting', author) })
       }
 
@@ -40,21 +39,21 @@ export default new class Settings extends Command {
     }
 
     const setting = (args._.shift() as string).toLowerCase()
-    const value = this.get<string>(guild.settings, setting)
+    const value = this.get(guild.settings, setting)
 
     if (value !== null && (value === undefined || typeof value === 'object')) {
       return void await message.channel.send({ embed: Embed.error('Setting must be a leaf node', author) })
     }
 
-    if (this.set(guild.settings, setting, this.resolve(args._.join(' ')))) {
+    if (!this.set(guild.settings, setting, this.resolve(args._.join(' ')))) {
       return void await message.channel.send({ embed: Embed.error('Could not find setting', author) })
     }
 
     client.data.set(message.guild.id, guild)
 
-    let newValue = this.get<string>(guild.settings, setting)
+    let newValue = this.get(guild.settings, setting)
 
-    if (!newValue) {
+    if (newValue === undefined) {
       return void await message.channel.send({ embed: Embed.error('Could not find setting', author) })
     }
 
@@ -79,23 +78,23 @@ export default new class Settings extends Command {
     return location as T
   }
 
-  private set<T>(object: { [key: string]: any }, path: string, value: any): void | true {
+  private set<T>(object: { [key: string]: any }, path: string, value: any): boolean {
     let nodes = path.split('.')
 
     if (object === undefined) {
-      return
+      return false
     }
 
     for (let i = 0; i < nodes.length - 1; i++) {
       if (object[nodes[i]] === undefined) {
-        return true
-      }
-      else {
+        return false
+      } else {
         object = object[nodes[i]]
       }
     }
 
     object[nodes[nodes.length - 1]] = value
+    return true
   }
 
   private resolve(string: string): string | number | boolean {

@@ -2,7 +2,7 @@ import { Message } from 'discord.js'
 
 import { Args, Category, Client, Command, Elevation } from '../model'
 
-const { burn } = require('../../assets/messages.json')
+import { burn } from '../config/messages.json'
 
 export default new class Burn extends Command {
   public name: string = 'burn'
@@ -21,7 +21,7 @@ export default new class Burn extends Command {
       return void this.args(message)
     }
 
-    const target = client.mention(args._[0])
+    const target = client.userify(args._[0])
 
     if (!target) {
       return

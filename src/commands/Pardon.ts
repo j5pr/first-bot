@@ -10,7 +10,7 @@ export default new class Pardon extends Command {
   public elevation: Elevation = Elevation.GLOBAL_ADMINISTRATOR | Elevation.ADMINISTRATOR
 
   public description: string = 'Pardon a user'
-  public usage: string = 'pardon <userid> [reason]'
+  public usage: string = 'pardon <user> [reason]'
 
   public options = []
 

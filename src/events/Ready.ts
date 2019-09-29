@@ -12,7 +12,7 @@ export default new class Ready extends Event {
 
     client.logger.info(`Ready to serve ${client.users.size} users in ${client.guilds.size} servers.`)
 
-    setInterval(() => this.setPresence(client), 5 * 60 * 1000)
+    client.setInterval(() => this.setPresence(client), 5 * 60 * 1000)
   }
 
   public async setPresence(client: DiscordClient) {

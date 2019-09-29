@@ -1,11 +1,11 @@
-import { Message, VoiceChannel } from 'discord.js'
+import { Message } from 'discord.js'
 import yt from 'ytdl-core'
 
 import { Args, Category, Client, Command, Elevation, Embed, flag } from '../model'
 
 export default new class Music extends Command {
   public name: string = 'music'
-  public aliases: string[] = []
+  public aliases: string[] = [ 'm' ]
   public category: Category = Category.MEDIA
 
   public elevation: Elevation = Elevation.GLOBAL_TRUSTED | Elevation.USER
@@ -62,7 +62,7 @@ export default new class Music extends Command {
   private async join(client: Client, message: Message): Promise<void> {
     const { author } = message
 
-    if (client.voiceConnections.has(message.guild.id)) {
+    if (client.voiceConnections.has(message.guild.id) && client.music.has(message.guild.id)) {
       return void message.channel.send({ embed: Embed.error('I\'m already connected to a channel!', author) })
     }
 

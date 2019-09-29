@@ -9,7 +9,7 @@ export default new class Help extends Command {
 
   public elevation: Elevation = Elevation.GLOBAL_USER | Elevation.USER
 
-  public description: string = 'Get information!'
+  public description: string = 'hElP iS hErE'
   public usage: string = 'help [command]'
 
   public options = [{ ...flag, name: 'all', description: 'Display all commands, including ones you can\'t execute', alias: 'a' }]

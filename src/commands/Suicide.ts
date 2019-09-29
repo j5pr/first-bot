@@ -1,9 +1,8 @@
 import { Message } from 'discord.js'
 
-import { Args, Category, Client, Command, Elevation, Embed } from '../model/'
+import { Args, Category, Client, Command, Elevation } from '../model/'
 
-const { suicide } = require('../../assets/messages.json')
-import Yargs from 'yargs/yargs'
+import { suicide } from '../config/messages.json'
 
 export default new class Suicide extends Command {
   public name: string = 'suicide'

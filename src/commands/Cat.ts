@@ -10,7 +10,7 @@ export default new class Cat extends Command {
 
   public elevation: Elevation = Elevation.GLOBAL_TRUSTED | Elevation.USER
 
-  public description: string = 'Space heater!'
+  public description: string = 'Meeeeoowww!'
   public usage: string = 'cat'
 
   public options = []

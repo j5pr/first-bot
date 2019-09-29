@@ -1,7 +1,8 @@
 {
   "suicide": [
     "{{user}} did nothing wrong...",
-    "Well yes but actually no."
+    "Well yes but actually no.",
+    ":("
   ],
   "kill": [
     "Oh wait, that's illegal.",
@@ -10,7 +11,8 @@
     "The end justifies the means. Goodbye, {{user}}."
   ],
   "burn": [
-    "{{user}} has been **ROASTED** in an oven by {{author}}."
+    "{{user}} has been **ROASTED** in an oven by {{author}}.",
+    "Cooking {{user}}..."
   ],
   "lick": [
     "{{author}} licked {{user}}! Ewww!",

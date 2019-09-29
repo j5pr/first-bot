@@ -9,7 +9,7 @@ export default new class End extends Command {
 
   public elevation: Elevation = Elevation.GLOBAL_AUTHOR | Elevation.NONE
 
-  public description: string = 'Gain information about a user'
+  public description: string = 'process.exit();'
   public usage: string = 'end <code> [reason]'
 
   public options = []

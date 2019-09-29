@@ -4,7 +4,12 @@ const sourcemaps = require('gulp-sourcemaps')
 const terser = require('gulp-terser')
 const typescript = require('gulp-typescript')
 
-gulp.task('build:typescript', () => {
+gulp.task('build files', () => gulp
+  .src(['src/**/*', '!src/**/*.ts'])
+  .pipe(gulp.dest('dist/'))
+)
+
+gulp.task('build typescript', () => {
   const project = typescript.createProject('tsconfig.json')
 
   return project.src()
@@ -15,4 +20,4 @@ gulp.task('build:typescript', () => {
     .pipe(gulp.dest('dist/'))
 })
 
-gulp.task('build', gulp.parallel('build:typescript'))
+gulp.task('build', gulp.parallel('build files', 'build typescript'))

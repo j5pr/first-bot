@@ -2,7 +2,7 @@ import { Message } from 'discord.js'
 
 import { Args, Category, Client, Command, Elevation, Embed } from '../model'
 
-const { kill } = require('../../assets/messages.json')
+import { kill } from '../config/messages.json'
 
 export default new class Kill extends Command {
   public name: string = 'kill'
@@ -21,7 +21,7 @@ export default new class Kill extends Command {
       return void this.args(message)
     }
 
-    const target = client.mention(args._[0])
+    const target = client.userify(args._[0])
 
     if (!target) {
       return

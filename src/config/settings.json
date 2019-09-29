@@ -1,0 +1,26 @@
+{
+  "settings": {
+    "prefix": "$",
+    "welcome": {
+      "enabled": true,
+      "channel": "welcome",
+      "join": "Welcome {{user}} to {{server}}",
+      "leave": "{{user}} has left the server. Goodbye!"
+    },
+    "filter": {
+      "enabled": true
+    },
+    "logs": {
+      "enabled": true,
+      "moderation": "moderation-logs",
+      "standard": "logs"
+    },
+    "roles": {
+      "moderator": "Moderator",
+      "administrator": "Administrator",
+      "blacklisted": "Blacklisted"
+    }
+  },
+
+  "punishments": []
+}

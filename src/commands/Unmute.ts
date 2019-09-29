@@ -7,7 +7,7 @@ export default new class Unmute extends Punishment {
   public type: Client.Punishment.Type = Client.Punishment.Type.UNMUTE
   public aliases: string[] = ['pardonmute']
 
-  public description: string = 'Mute a user'
+  public description: string = 'Unmute a user'
   public usage: string = 'unmute <user> [reason]'
 
   public options = []

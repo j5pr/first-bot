@@ -15,7 +15,7 @@ export abstract class Punishment extends Command {
       return void await this.args(message)
     }
 
-    const user = guild.member(client.mention(args._[0])!)
+    const user = guild.member(client.userify(args._[0], guild)!)
     const reason = args._.slice(1).join(' ') || 'None'
 
     if (user.id === author.id) {

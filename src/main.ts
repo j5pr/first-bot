@@ -8,7 +8,11 @@ import { createLogger, format, transports } from 'winston'
 
 import { Client, Command, Event } from './model'
 
-;(async () => {
+import accounts from './config/users.json'
+import defaults from './config/settings.json'
+
+(async () => {
+  const timestamp = moment().utc().format('YYYY-MM-DDTHH.mm.ss') + 'Z'
 
   const commands: Command[] = []
   for (let name of await fs.readdir(path.join(__dirname, '..', 'dist', 'commands'))) {
@@ -25,53 +29,23 @@ import { Client, Command, Event } from './model'
     version: 'v1.0.0',
 
     logger: createLogger({
+      exitOnError: false,
       level: 'info',
-      format: format.json(),
+      format: format.combine(format.timestamp(), format.json()),
       transports: [
-        new transports.File({ filename: `logs/${moment().utc().format('YYYY-MM-DDTHH.mm.ss')}Z.log` }),
-        new transports.Console({ format: format.cli() })
+        new transports.File({ filename: `logs/${timestamp}.combined.log` }),
+        new transports.Console({ format: format.combine(format.timestamp(), format.cli()) })
+      ],
+      exceptionHandlers: [
+        new transports.File({ filename: `logs/${timestamp}.error.log` })
       ]
     }),
 
-    accounts: {
-      owner: '470502898758057986',
-      admin: [
-        '270286112667205635'
-      ],
-      trusted: [
-
-      ],
-       blacklisted: [
-
-      ]
-    },
-
-    defaults: {
-      settings: {
-        prefix: '$',
-        welcome: {
-          enabled: true,
-          channel: 'welcome',
-          join: 'Welcome {{user}} to {{server}}',
-          leave: '{{user}} has left the server. Goodbye!'
-        },
-        logs: {
-          enabled: true,
-          moderation: 'moderation-logs',
-          standard: 'logs'
-        },
-        roles: {
-          moderator: 'Moderator',
-          administrator: 'Administrator',
-          blacklisted: 'Blacklisted'
-        }
-      },
-
-      punishments: []
-    }
+    defaults,
+    accounts
   })
 
   await client.init(commands, events)
-  await client.login()
+  await client.autoReconnect().login()
 
 })()

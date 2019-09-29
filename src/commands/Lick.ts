@@ -2,7 +2,7 @@ import { Message } from 'discord.js'
 
 import { Args, Category, Client, Command, Elevation, Embed } from '../model'
 
-const { lick } = require('../../assets/messages.json')
+import { lick } from '../config/messages.json'
 
 export default new class Lick extends Command {
   public name: string = 'lick'
@@ -11,7 +11,7 @@ export default new class Lick extends Command {
 
   public elevation: Elevation = Elevation.GLOBAL_TRUSTED | Elevation.USER
 
-  public description: string = 'Meanie D:'
+  public description: string = 'Ewww D:'
   public usage: string = 'lick <user>'
 
   public options = []
@@ -21,7 +21,7 @@ export default new class Lick extends Command {
       return void this.args(message)
     }
 
-    const target = client.mention(args._[0])
+    const target = client.userify(args._[0])
 
     if (!target) {
       return
