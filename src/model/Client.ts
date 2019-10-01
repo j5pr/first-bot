@@ -81,7 +81,7 @@ export class Client extends discord.Client {
   public static allowed(has: Elevation, required: Elevation) {
     return (has & 0xF0) > Elevation.GLOBAL_USER || (has & 0x0F) > Elevation.USER ?
       false :
-      (has & 0xF0) < (required & 0xF0) || (has & 0x0F) < (required & 0x0F)
+      !((has & 0xF0) > (required & 0xF0) && (has & 0x0F) > (required & 0x0F))
   }
 
   public userify(resolvable: string, guild?: Guild): User | undefined {
