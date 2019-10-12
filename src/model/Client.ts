@@ -1,5 +1,7 @@
-import { User, Guild } from 'discord.js'
-import * as discord from 'discord.js'
+/* eslint-disable import/export */
+/* eslint-disable no-redeclare */
+
+import discord, { User, Guild } from 'discord.js'
 import Enmap from 'enmap'
 import { Logger, createLogger, transports, format } from 'winston'
 
@@ -15,7 +17,12 @@ export class Client extends discord.Client {
   public data: Enmap<string, Client.Guild> & { defaults: Client.Guild }
   public music: Map<string, Client.Guild.Music> = new Map()
 
-  private accounts: { owner: string, admin: string[], trusted: string[], blacklisted: string[] }
+  private accounts: {
+    owner: string
+    admin: string[]
+    trusted: string[]
+    blacklisted: string[]
+  }
 
   public constructor(public options: Client.Options) {
     super(options)
@@ -24,7 +31,12 @@ export class Client extends discord.Client {
     this.cooldown = options.cooldown || 1000
 
     this.accounts = options.accounts
-    this.logger = options.logger || createLogger({ level: 'info', transports: [new transports.Console({ format: format.simple() })] })
+    this.logger =
+      options.logger ||
+      createLogger({
+        level: 'info',
+        transports: [new transports.Console({ format: format.simple() })]
+      })
 
     this.token = options.token
 
@@ -48,9 +60,20 @@ export class Client extends discord.Client {
     const guildData = this.data.ensure(guild.id, this.data.defaults)
     const settings = guildData.settings
 
-    const adminRole = guild.roles.find((v) => v.name === settings.roles.administrator || v.id === settings.roles.administrator)
-    const modRole = guild.roles.find((v) => v.name === settings.roles.moderator || v.id === settings.roles.moderator)
-    const blacklistRole = guild.roles.find((v) => v.name === settings.roles.blacklisted || v.id === settings.roles.blacklisted)
+    const adminRole = guild.roles.find(
+      v =>
+        v.name === settings.roles.administrator ||
+        v.id === settings.roles.administrator
+    )
+    const modRole = guild.roles.find(
+      v =>
+        v.name === settings.roles.moderator || v.id === settings.roles.moderator
+    )
+    const blacklistRole = guild.roles.find(
+      v =>
+        v.name === settings.roles.blacklisted ||
+        v.id === settings.roles.blacklisted
+    )
 
     if (this.accounts.owner === user.id) {
       global = Elevation.GLOBAL_AUTHOR
@@ -72,45 +95,48 @@ export class Client extends discord.Client {
       local = Elevation.BLACKLISTED
     }
 
-    if (global === Elevation.GLOBAL_BLACKLISTED)
+    if (global === Elevation.GLOBAL_BLACKLISTED) {
       local = Elevation.BLACKLISTED
+    }
 
     return global | local
   }
 
-  public static allowed(has: Elevation, required: Elevation) {
-    return (has & 0xF0) > Elevation.GLOBAL_USER || (has & 0x0F) > Elevation.USER ?
-      false :
-      !((has & 0xF0) > (required & 0xF0) && (has & 0x0F) > (required & 0x0F))
+  public static allowed(has: Elevation, required: Elevation): boolean {
+    return (has & 0xf0) > Elevation.GLOBAL_USER || (has & 0x0f) > Elevation.USER
+      ? false
+      : !((has & 0xf0) > (required & 0xf0) && (has & 0x0f) > (required & 0x0f))
   }
 
   public userify(resolvable: string, guild?: Guild): User | undefined {
     let user: User | undefined
 
-    if (/<@!?.+>/.test(resolvable))
+    if (/<@!?.+>/.test(resolvable)) {
       user = this.mention(resolvable)
-
-    if (user)
-      return user
-
-    if (guild) {
-      let member = guild.members.find((m) => m.displayName === resolvable)
-
-      if (member)
-        return member.user
     }
 
-    user = this.users.find(u => 
-      u.id === resolvable ||
-      u.username === resolvable ||
-      u.tag === resolvable
+    if (user) {
+      return user
+    }
+
+    if (guild) {
+      const member = guild.members.find(m => m.displayName === resolvable)
+
+      if (member) {
+        return member.user
+      }
+    }
+
+    user = this.users.find(
+      u =>
+        u.id === resolvable || u.username === resolvable || u.tag === resolvable
     )
 
     return user
   }
 
   public mention(mention: string): User | undefined {
-    if (!mention.startsWith('<@') || !mention.endsWith('>')) {
+    if (!/<@!?.+>/.test(mention)) {
       return
     }
 
@@ -125,8 +151,8 @@ export class Client extends discord.Client {
 
   public async login(): Promise<string> {
     await super.destroy()
-    
-    return await super.login(this.token)
+
+    return super.login(this.token)
   }
 
   public autoReconnect(): Client {
@@ -134,25 +160,25 @@ export class Client extends discord.Client {
   }
 
   public async init(commands: Command[], events: Event[]): Promise<void> {
-    for (let event of events) {
+    for (const event of events) {
       this.logger.info(`Loading Event: ${event.name}`)
 
       this.on(event.name, event.run.bind(event, this))
     }
 
-    for (let command of commands) {
+    for (const command of commands) {
       this.logger.info(`Loading Command: ${command.name}`)
 
       this.commands.push(command)
     }
 
-    for (let guild of this.guilds.array()) {
+    for (const guild of this.guilds.array()) {
       this.data.ensure(guild.id, this.data.defaults)
     }
   }
 
   public wait(ms: number): Promise<void> {
-    return new Promise((resolve) => this.setTimeout(resolve, ms))
+    return new Promise((resolve): NodeJS.Timer => this.setTimeout(resolve, ms))
   }
 }
 
@@ -165,14 +191,18 @@ export namespace Client {
 
   export namespace Guild {
     export interface Settings {
-      prefix: string,
+      prefix: string
+      clean: boolean
       filter: {
         enabled: boolean
+        useDefaults: boolean
+        custom: string[]
+        allowed: string[]
       }
       welcome: {
-        enabled: boolean,
-        channel: string,
-        join: string,
+        enabled: boolean
+        channel: string
+        join: string
         leave: string
       }
       logs: {
@@ -188,7 +218,10 @@ export namespace Client {
     }
 
     export interface Music {
-      textChannel: discord.TextChannel | discord.DMChannel | discord.GroupDMChannel
+      textChannel:
+        | discord.TextChannel
+        | discord.DMChannel
+        | discord.GroupDMChannel
       voiceChannel: discord.VoiceChannel
       connection: discord.VoiceConnection
       volume: number

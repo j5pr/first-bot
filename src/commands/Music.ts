@@ -1,35 +1,62 @@
 import { Message } from 'discord.js'
 import yt from 'ytdl-core'
 
-import { Args, Category, Client, Command, Elevation, Embed, flag } from '../model'
+import {
+  Args,
+  Category,
+  Client,
+  Command,
+  Elevation,
+  Embed,
+  flag
+} from '../model'
 
-export default new class Music extends Command {
-  public name: string = 'music'
-  public aliases: string[] = [ 'm' ]
+export default new (class Music extends Command {
+  public name = 'music'
+  public aliases: string[] = ['m']
   public category: Category = Category.MEDIA
 
   public elevation: Elevation = Elevation.GLOBAL_TRUSTED | Elevation.USER
 
-  public description: string = 'Audio.mp4'
-  public usage: string = 'music [play|queue|skip] [...options]'
+  public description = 'Audio.mp4'
+  public usage = 'music [play|queue|skip] [...options]'
 
   public options = [
-    { ...flag, name: 'join', description: 'Get the bot to join your channel', alias: 'j' },
-    { ...flag, name: 'leave', description: 'Get the bot to leave it\'s current channel', alias: 'l' },
-    { ...flag, name: 'clear', description: 'Clear the current queue', alias: 'c' }
+    {
+      ...flag,
+      name: 'join',
+      description: 'Get the bot to join your channel',
+      alias: 'j'
+    },
+    {
+      ...flag,
+      name: 'leave',
+      description: "Get the bot to leave it's current channel",
+      alias: 'l'
+    },
+    {
+      ...flag,
+      name: 'clear',
+      description: 'Clear the current queue',
+      alias: 'c'
+    }
   ]
 
-  public async run(client: Client, message: Message, args: Args, guild: Client.Guild): Promise<void> {
+  public async run(
+    client: Client,
+    message: Message,
+    args: Args
+  ): Promise<void> {
     if (args.join) {
       await this.join(client, message)
     } else if (args.leave) {
-      return void await this.leave(client, message)
+      return this.leave(client, message)
     } else if (args.clear) {
-      return void await this.clear(client, message)
+      return this.clear(client, message)
     }
 
     if (!args.join && args._.length < 1) {
-      return void this.args(message)
+      return this.args(message)
     } else if (args.join && args._.length < 1) {
       return
     }
@@ -55,35 +82,59 @@ export default new class Music extends Command {
         await this.skip(client, message)
       }
     } else {
-      await message.channel.send({ embed: Embed.error('Unknown operation', message.author) })
+      await message.channel.send({
+        embed: Embed.error('Unknown operation', message.author)
+      })
     }
   }
 
   private async join(client: Client, message: Message): Promise<void> {
     const { author } = message
 
-    if (client.voiceConnections.has(message.guild.id) && client.music.has(message.guild.id)) {
-      return void message.channel.send({ embed: Embed.error('I\'m already connected to a channel!', author) })
+    if (
+      client.voiceConnections.has(message.guild.id) &&
+      client.music.has(message.guild.id)
+    ) {
+      await message.channel.send({
+        embed: Embed.error("I'm already connected to a channel!", author)
+      })
+
+      return
     }
 
     const channel = message.member.voiceChannel
 
     if (!channel) {
-      return void message.channel.send({ embed: Embed.error('You must be in a voice channel!', author) })
+      await message.channel.send({
+        embed: Embed.error('You must be in a voice channel!', author)
+      })
+
+      return
     }
 
     if (!channel.joinable || !channel.speakable) {
-      return void message.channel.send({ embed: Embed.error('I must have permissions [CONNECT] and [SPEAK] in this channel!', author) })
+      await message.channel.send({
+        embed: Embed.error(
+          'I must have permissions [CONNECT] and [SPEAK] in this channel!',
+          author
+        )
+      })
+
+      return
     }
 
     let connection
     try {
       connection = await channel.join()
     } catch (e) {
-      return void message.channel.send({ embed: Embed.error(e.toString(), author) })
+      await message.channel.send({
+        embed: Embed.error(e.toString(), author)
+      })
+
+      return
     }
 
-    connection.on('disconnect', () => void client.music.delete(message.guild.id))
+    connection.on('disconnect', () => client.music.delete(message.guild.id))
 
     client.music.set(message.guild.id, {
       textChannel: message.channel,
@@ -99,19 +150,31 @@ export default new class Music extends Command {
     const { author } = message
 
     if (!client.voiceConnections.has(message.guild.id)) {
-      return void message.channel.send({ embed: Embed.error('I\'m not connected to a channel!', author) })
+      await message.channel.send({
+        embed: Embed.error("I'm not connected to a channel!", author)
+      })
+
+      return
     }
 
     const info = client.music.get(message.guild.id) as Client.Guild.Music
 
-    await info.connection.disconnect()
+    info.connection.disconnect()
   }
 
-  private async play(client: Client, message: Message, query: string): Promise<void> {
+  private async play(
+    client: Client,
+    message: Message,
+    query: string
+  ): Promise<void> {
     const { author } = message
 
     if (!client.voiceConnections.has(message.guild.id)) {
-      return void await message.channel.send({ embed: Embed.error('I\'m not connected to a channel!', author) })
+      await message.channel.send({
+        embed: Embed.error("I'm not connected to a channel!", author)
+      })
+
+      return
     }
 
     const info = client.music.get(message.guild.id) as Client.Guild.Music
@@ -120,7 +183,8 @@ export default new class Music extends Command {
     try {
       songInfo = await yt.getInfo(query)
     } catch (e) {
-      return void message.channel.send(Embed.error(e.toString(), author))
+      await message.channel.send(Embed.error(e.toString(), author))
+      return
     }
 
     const song = {
@@ -134,15 +198,27 @@ export default new class Music extends Command {
     if (info.queue.length === 1 && !info.playing) {
       this.playNext(client, info)
     } else {
-      await message.channel.send({ embed: Embed.info().addField('Music', `"${song.title}" by ${song.author} has been added to the queue! (Position: ${info.queue.length})`) })
+      await message.channel.send({
+        embed: Embed.info().addField(
+          'Music',
+          `"${song.title}" by ${song.author} has been added to the queue! (Position: ${info.queue.length})`
+        )
+      })
     }
   }
 
-  private async playNext(client: Client, info: Client.Guild.Music): Promise<void> {
+  private async playNext(
+    client: Client,
+    info: Client.Guild.Music
+  ): Promise<void> {
     if (info.queue.length === 0) {
       info.playing = false
 
-      return void await info.textChannel.send({ embed: Embed.info().addField('Music', `The queue is now empty.`) })
+      await info.textChannel.send({
+        embed: Embed.info().addField('Music', `The queue is now empty.`)
+      })
+
+      return
     }
 
     info.playing = true
@@ -155,14 +231,20 @@ export default new class Music extends Command {
       embed: Embed.info()
         .addField('Music', `Now playing... "${song.title}" by ${song.author}.`)
         .addField('Link', song.url)
-        .addField('Queue', `There ${left === 1 ? 'is' : 'are'} ${left === 0 ? 'no' : (left === 1 ? 'one' : info.queue.length)} song${left === 1 ? '' : 's'} left in the queue.`)
+        .addField(
+          'Queue',
+          `There ${left === 1 ? 'is' : 'are'} ${
+            left === 0 ? 'no' : left === 1 ? 'one' : info.queue.length
+          } song${left === 1 ? '' : 's'} left in the queue.`
+        )
     })
 
-    const dispatcher = info.connection.playStream(yt(song.url))
+    const dispatcher = info.connection
+      .playStream(yt(song.url))
       .on('end', () => {
         this.playNext(client, info)
       })
-      .on('error', (e) => {
+      .on('error', e => {
         info.textChannel.send({ embed: Embed.error(e.toString()) })
 
         info.connection.disconnect()
@@ -175,7 +257,11 @@ export default new class Music extends Command {
     const { author } = message
 
     if (!client.voiceConnections.has(message.guild.id)) {
-      return void await message.channel.send({ embed: Embed.error('I\'m not connected to a channel!', author) })
+      await message.channel.send({
+        embed: Embed.error("I'm not connected to a channel!", author)
+      })
+
+      return
     }
 
     const info = client.music.get(message.guild.id) as Client.Guild.Music
@@ -188,31 +274,41 @@ export default new class Music extends Command {
     const { author } = message
 
     if (!client.voiceConnections.has(message.guild.id)) {
-      return void await message.channel.send({ embed: Embed.error('I\'m not connected to a channel!', author) })
+      await message.channel.send({
+        embed: Embed.error("I'm not connected to a channel!", author)
+      })
+
+      return
     }
 
     const info = client.music.get(message.guild.id) as Client.Guild.Music
 
     const embed = Embed.info()
-    let songs = []
+    const songs = []
 
-    for (let song of info.queue) {
+    for (const song of info.queue) {
       songs.push(`"${song.title}" by ${song.author}`)
     }
 
     await message.channel.send({
-      embed: embed
-        .addField('Queue', songs.join('\n') === '' ? '*None*' : songs.join('\n'))
+      embed: embed.addField(
+        'Queue',
+        songs.join('\n') === '' ? '*None*' : songs.join('\n')
+      )
     })
   }
 
   private async skip(client: Client, message: Message): Promise<void> {
     if (!client.voiceConnections.has(message.guild.id)) {
-      return void await message.channel.send({ embed: Embed.error('I\'m not connected to a channel!', message.author) })
+      await message.channel.send({
+        embed: Embed.error("I'm not connected to a channel!", message.author)
+      })
+
+      return
     }
 
     const info = client.music.get(message.guild.id) as Client.Guild.Music
 
     info.connection.dispatcher.end()
   }
-}
+})()

@@ -16,19 +16,24 @@ export abstract class Command {
   public abstract usage: string
 
   private yurgs: Argv = Yargs()
-  private registered: boolean = false
+  private registered = false
 
-  public abstract async run(client: Client, message: Message, args: Args, guild: Client.Guild): Promise<void>
+  public abstract async run(
+    client: Client,
+    message: Message,
+    args: Args,
+    guild: Client.Guild
+  ): Promise<void>
 
-  public args(message: Message): Promise<any> {
-    return message.channel.send({
+  public async args(message: Message): Promise<void> {
+    await message.channel.send({
       embed: Embed.args(message.author)
     })
   }
 
   public get yargs(): Argv {
     if (!this.registered) {
-      for (let option of this.options) {
+      for (const option of this.options) {
         this.yurgs.option(option.name, option)
       }
 

@@ -4,18 +4,18 @@ const sourcemaps = require('gulp-sourcemaps')
 const terser = require('gulp-terser')
 const typescript = require('gulp-typescript')
 
-gulp.task('build files', () => gulp
-  .src(['src/**/*', '!src/**/*.ts'])
-  .pipe(gulp.dest('dist/'))
+gulp.task('build files', () =>
+  gulp.src(['src/**/*', '!src/**/*.ts']).pipe(gulp.dest('dist/'))
 )
 
 gulp.task('build typescript', () => {
   const project = typescript.createProject('tsconfig.json')
 
-  return project.src()
+  return project
+    .src()
     .pipe(sourcemaps.init())
-    .pipe(project(typescript.reporter.fullReporter())).js
-    .pipe(terser({ mangle: true }))
+    .pipe(project(typescript.reporter.fullReporter()))
+    .js.pipe(terser({ mangle: true }))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('dist/'))
 })
