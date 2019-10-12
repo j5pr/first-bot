@@ -37,7 +37,7 @@ import defaults from './config/settings.json'
 
   const client = new Client({
     token: process.env.CLIENT_TOKEN as string,
-    version: 'v1.0.0',
+    version: 'v1.1.0',
 
     logger: createLogger({
       exitOnError: false,
