@@ -26,7 +26,7 @@
     "ffmpeg": "^0.0.4",
     "mathjs": "^6.2.3",
     "moment": "^2.24.0",
-    "node-opus": "^0.3.2",
+    "node-opus": "^0.3.3",
     "tinycolor2": "^1.4.1",
     "winston": "^3.2.1",
     "yargs": "^14.2.0",
