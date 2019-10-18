@@ -21,7 +21,7 @@
     "better-sqlite3": "^5.4.0",
     "dice-typescript": "^1.6.1",
     "discord.js": "^11.5.1",
-    "dotenv": "^8.1.0",
+    "dotenv": "^8.2.0",
     "enmap": "^5.2.0",
     "ffmpeg": "^0.0.4",
     "mathjs": "^6.2.3",
