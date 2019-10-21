@@ -1106,10 +1106,10 @@ end-of-stream@^1.0.0, end-of-stream@^1.1.0:
   dependencies:
     once "^1.4.0"
 
-enmap@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/enmap/-/enmap-5.2.0.tgz#bed82574e7bfb1e0e2e2a647f001ae8fcb949d8a"
-  integrity sha512-Bw9VQpk3Vkm9BNc7XqRBz1RMEjBqBiolCr2aaTkkBX7s8TuhnKD/yl/SgakBp3OtYl+f9vw3LpHOfWbwtb78+Q==
+enmap@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/enmap/-/enmap-5.2.1.tgz#3f93327089d2e4c14b1dafff3d5343b96872c00b"
+  integrity sha512-xLPp1+iomDeZHVaGExNAQGllOzN2q822OEa1/uqMSlKtTEacyqTW0aCbkbqweVKTC4Fm+6E745KqJcTP9OnVpg==
   dependencies:
     lodash "^4.17.15"
 
