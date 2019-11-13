@@ -22,7 +22,7 @@
     "dice-typescript": "^1.6.1",
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
-    "enmap": "^5.2.1",
+    "enmap": "^5.2.3",
     "ffmpeg": "^0.0.4",
     "mathjs": "^6.2.3",
     "moment": "^2.24.0",
