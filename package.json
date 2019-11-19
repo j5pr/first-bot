@@ -39,7 +39,7 @@
     "@types/tinycolor2": "^1.4.2",
     "@types/yargs": "^13.0.3",
     "@typescript-eslint/eslint-plugin": "^2.6.1",
-    "@typescript-eslint/parser": "^2.6.1",
+    "@typescript-eslint/parser": "^2.8.0",
     "del": "^5.1.0",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.5.0",
