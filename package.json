@@ -56,6 +56,6 @@
     "gulp-typescript": "^5.0.1",
     "prettier": "^1.19.1",
     "prettier-config-standard": "^1.0.1",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.5"
   }
 }
